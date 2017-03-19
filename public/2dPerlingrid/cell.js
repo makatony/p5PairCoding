@@ -3,7 +3,7 @@ function Cell(x, y) {
 		x: x,
 		y: y
 	};
-	this.color = 0;
+	this.color = color(0,0,0);
 	
 }
 
@@ -12,15 +12,15 @@ Cell.prototype.getNeighbours = function () {
 	var y = this.gridPos.y;
 	var neighbours = [];
 	
-	var top = cells[index(x, y - 1)];
-	var right = cells[index(x + 1, y)];
-	var bottom = cells[index(x, y + 1)];
-	var left = cells[index(x - 1, y)];
+	var top = cells[indx(x, y - 1)];
+	var right = cells[indx(x + 1, y)];
+	var bottom = cells[indx(x, y + 1)];
+	var left = cells[indx(x - 1, y)];
 	
-	neighbours.push(top);
-	neighbours.push(right);
-	neighbours.push(bottom);
-	neighbours.push(left);
+	if (top) neighbours.push(top);
+	if (right) neighbours.push(right);
+	if (bottom) neighbours.push(bottom);
+	if (left) neighbours.push(left);
 	return neighbours;
 }
 
@@ -32,17 +32,32 @@ Cell.prototype.getRandomNeighbour = function () {
 		return undefined;
 }
 
-Cell.prototype.render = function () {
+Cell.prototype.getIndex = function () {
+	return indx(this.gridPos.x,this.gridPos.y);
+}
+
+Cell.prototype.getDist = function (cell) {
+	//manhattan distance
+	var manhattan = abs(this.gridPos.x-cell.gridPos.x) + abs(this.gridPos.y-cell.gridPos.y);
+	//euclidean distance
+	var euclidean = dist(this.gridPos.x, this.gridPos.y, cell.gridPos.x, cell.gridPos.y);
+	// return manhattan *.8 + euclidean *.2;
+	return manhattan;
+	// return euclidean;
+}
+
+Cell.prototype.render = function (color) {
+	var col = color || this.color;
 	var w = CELLWITDH;
 	var x = this.gridPos.x * w;
 	var y = this.gridPos.y * w;
 	
 	noStroke();
-	fill(floor(this.color));
+	fill(col);
 	rect(x, y, w, w)
 }
 
-function index(x, y) {
+function indx(x, y) {
 	if (x < 0 || y < 0 || x >= COLS || y >= ROWS)
 		return -1;
 	return x + y * COLS;
