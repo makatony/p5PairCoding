@@ -1,4 +1,4 @@
-var CELLWITDH = 4;
+var CELLWITDH = 2;
 var cells = [];
 var inc = 0.1;
 var startCell = undefined;
